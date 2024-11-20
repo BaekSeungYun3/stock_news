@@ -1,0 +1,15 @@
+.sentiment-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.sentiment-container h1 {
+  font-size: 2rem;
+  color: #4a3b8b;
+  margin-bottom: 20px;
+}
+
+.sentiment-container p {
+  font-size: 1.2rem;
+  color: #666;
+}

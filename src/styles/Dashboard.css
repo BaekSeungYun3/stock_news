@@ -1,0 +1,100 @@
+/* 대시보드 전체 컨테이너 */
+.dashboard-container {
+  padding: 20px;
+}
+
+/* 상단 카드 레이아웃 */
+.dashboard-top {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* 카드 스타일 */
+.card {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 제목 스타일 */
+.card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+/* 감정 점수 스타일 */
+.sentiment-score {
+  font-size: 2rem;
+  color: #4a3b8b;
+  margin-bottom: 20px;
+}
+
+/* 그래프 플레이스홀더 스타일 */
+.graph-placeholder {
+  height: 200px;
+  background-color: #eef2f7;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 1.2rem;
+}
+
+/* 카드 뉴스 섹션 */
+.dashboard-bottom {
+  margin-top: 30px;
+}
+
+/* 뉴스 스크롤 컨테이너 */
+.news-scroll-container {
+  display: flex;
+  overflow-x: auto; /* 가로 스크롤 활성화 */
+  gap: 20px;
+  padding: 10px 0;
+  scroll-behavior: smooth; /* 부드러운 스크롤 */
+}
+
+.news-scroll-container::-webkit-scrollbar {
+  height: 8px; /* 스크롤바 높이 */
+}
+
+.news-scroll-container::-webkit-scrollbar-thumb {
+  background: #4a3b8b; /* 스크롤바 색상 */
+  border-radius: 10px;
+}
+
+.news-scroll-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+/* 뉴스 카드 스타일 */
+.news-card {
+  min-width: 200px;
+  flex-shrink: 0; 
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 1rem;
+  color: #4a3b8b;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
