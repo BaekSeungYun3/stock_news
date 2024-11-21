@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import CardNews from '../components/CardNews';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -32,38 +33,7 @@ const Dashboard = () => {
         {/* 카드 뉴스 섹션 */}
         <div className="dashboard-bottom">
           <h3>관련 뉴스 제공</h3>
-          <div className="news-scroll-container">
-            <div
-              className="news-card"
-              onClick={() => navigate('/news/1')} // 뉴스 1로 이동
-            >
-              뉴스 1
-            </div>
-            <div
-              className="news-card"
-              onClick={() => navigate('/news/2')} // 뉴스 2로 이동
-            >
-              뉴스 2
-            </div>
-            <div
-              className="news-card"
-              onClick={() => navigate('/news/3')} // 뉴스 3로 이동
-            >
-              뉴스 3
-            </div>
-            <div
-              className="news-card"
-              onClick={() => navigate('/news/4')} // 뉴스 4로 이동
-            >
-              뉴스 4
-            </div>
-            <div
-              className="news-card"
-              onClick={() => navigate('/news/5')} // 뉴스 5로 이동
-            >
-              뉴스 5
-            </div>
-          </div>
+          <CardNews /> {/* 뉴스 카드 표시 */}
         </div>
       </div>
     </div>

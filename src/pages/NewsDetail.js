@@ -1,19 +1,20 @@
 import React from 'react';
-import Header from '../components/Header';
-import { useParams } from 'react-router-dom';
+import '../styles/NewsDetail.css'; // 세부 뉴스 스타일 연결
 
-const NewsDetail = () => {
-  const { id } = useParams();
-
-  return (
-    <div>
-      <Header />
-      <div className="news-detail">
-        <h1>뉴스 {id} 상세 정보</h1>
-        <p>여기에 뉴스 상세 내용이 표시됩니다.</p>
-      </div>
-    </div>
-  );
+const NewsDetail = ({ article, onBack }) => {
+    return (
+        <div className="news-detail">
+            <button className="back-button" onClick={onBack}>뒤로가기</button>
+            <h1>{article.title}</h1>
+            <p>{article.content}</p> {/* 기사 본문 */}
+            <p className="sentiment">
+                감정 점수: {article.sentimentScore.toFixed(2)}
+            </p>
+            <a href={article.url} target="_blank" rel="noopener noreferrer">
+                원문 읽기
+            </a>
+        </div>
+    );
 };
 
 export default NewsDetail;

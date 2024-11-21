@@ -1,42 +1,78 @@
+require('dotenv').config(); // .env 파일 로드
 const express = require('express');
-const mysql = require('mysql2'); // MySQL/MariaDB 클라이언트
-const bcrypt = require('bcrypt'); // 비밀번호 해싱
+const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
-const jwt = require('jsonwebtoken'); // JWT 토큰
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
 
 const app = express();
-const PORT = 3001; // Express 서버 포트
+const PORT = process.env.PORT || 3001; // .env에서 포트 가져오기
 
 // JWT 시크릿 키
-const JWT_SECRET = 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// MariaDB 연결 설정
+const DB_CONFIG = {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+};
+
+// 데이터베이스 연결
+const connection = mysql.createConnection(DB_CONFIG);
+connection.connect((err) => {
+    if (err) {
+        console.error('데이터베이스에 연결할 수 없습니다: ', err);
+        process.exit(1); // 연결 실패 시 서버 종료
+    }
+    console.log('데이터베이스에 연결되었습니다.');
+});
 
 // CORS 설정
 app.use(cors({
-    origin: 'http://localhost:3000' // 클라이언트 URL 추가
+    origin: 'http://localhost:3000', // 프론트엔드 URL
 }));
 
 // JSON 파싱을 위한 미들웨어
 app.use(express.json());
 
-// MariaDB 연결 설정
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'news_db',
-    port: 3306, // MariaDB 포트
-});
+// ---- [1] 뉴스 API 관련 기능 ----
+const fetchSamsungNews = async () => {
+    const API_KEY = process.env.DEEPSEARCH_API_KEY;
+    const url = `https://api-v2.deepsearch.com/v1/articles?company_name=삼성전자&date_from=2024-01-01&date_to=2024-12-31&page_size=50`;
 
-// 데이터베이스 연결
-connection.connect((err) => {
-    if (err) {
-        console.error('데이터베이스에 연결할 수 없습니다: ', err);
-        return;
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${API_KEY}`,
+            },
+        });
+
+        const articles = response.data.data || [];
+        articles.forEach(article => {
+            article.sentimentScore = article.esg?.polarity?.score || 0;
+        });
+
+        return articles;
+    } catch (error) {
+        console.error("뉴스 API 요청 오류:", error.message || error);
+        return [];
     }
-    console.log('데이터베이스에 연결되었습니다.');
+};
+
+app.get('/news', async (req, res) => {
+    try {
+        const articles = await fetchSamsungNews();
+        res.json(articles);
+    } catch (error) {
+        res.status(500).json({ error: "뉴스 데이터를 불러오는 중 오류가 발생했습니다." });
+    }
 });
 
-// 회원가입 엔드포인트
+// ---- [2] 데이터베이스 관련 기능 ----
 app.post('/api/register', async (req, res) => {
     const { username, password } = req.body;
 
@@ -54,7 +90,7 @@ app.post('/api/register', async (req, res) => {
                     if (err.code === 'ER_DUP_ENTRY') {
                         return res.status(400).json({ message: '이미 존재하는 사용자 이름입니다.' });
                     }
-                    console.error('쿼리 실행 중 오류 발생: ', err);
+                    console.error('쿼리 실행 오류:', err);
                     return res.status(500).json({ message: '서버 오류' });
                 }
                 res.status(201).json({ message: '회원가입 성공!' });
@@ -65,7 +101,6 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// 로그인 엔드포인트
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -78,7 +113,7 @@ app.post('/api/login', (req, res) => {
         [username],
         async (err, results) => {
             if (err) {
-                console.error('쿼리 실행 중 오류 발생: ', err);
+                console.error('쿼리 실행 오류:', err);
                 return res.status(500).json({ message: '서버 오류' });
             }
 
@@ -100,7 +135,6 @@ app.post('/api/login', (req, res) => {
     );
 });
 
-// 인증 엔드포인트 (보호된 라우트)
 app.get('/api/protected', (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -116,7 +150,7 @@ app.get('/api/protected', (req, res) => {
     }
 });
 
-// 서버 시작
+// ---- [3] 서버 시작 ----
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT}에서 실행 중입니다.`);
 });
