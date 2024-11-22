@@ -18,4 +18,3 @@ const NewsDetail = ({ article, onBack }) => {
 };
 
 export default NewsDetail;
-//나은언니 안니용
