@@ -1,0 +1,16 @@
+.calendar-container {
+  padding: 20px;
+  text-align: center;
+}
+/* 변경 되나? */
+
+.calendar-container h1 {
+  font-size: 2rem;
+  color: #4a3b8b;
+  margin-bottom: 20px;
+}
+
+.calendar-container p {
+  font-size: 1.2rem;
+  color: #666;
+}
