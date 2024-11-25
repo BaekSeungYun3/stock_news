@@ -39,6 +39,8 @@ app.use(cors({
 // JSON 파싱을 위한 미들웨어
 app.use(express.json());
 
+
+
 // ---- [1] 뉴스 API 관련 기능 ----
 const fetchSamsungNews = async () => {
     const API_KEY = process.env.DEEPSEARCH_API_KEY;
@@ -53,15 +55,21 @@ const fetchSamsungNews = async () => {
 
         const articles = response.data.data || [];
         articles.forEach(article => {
+            // 감정 점수 설정
             article.sentimentScore = article.esg?.polarity?.score || 0;
+
+            // content_url을 url로 매핑
+            article.url = article.content_url || null;
         });
 
+        console.log("Processed Articles:", articles); // 수정된 데이터 확인
         return articles;
     } catch (error) {
         console.error("뉴스 API 요청 오류:", error.message || error);
         return [];
     }
 };
+
 
 app.get('/news', async (req, res) => {
     try {
