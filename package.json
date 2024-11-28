@@ -9,10 +9,19 @@
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "browserify-zlib": "^0.2.0",
+<<<<<<< HEAD
+=======
+    "chart.js": "^4.4.6",
+    "chartjs-chart-financial": "^0.2.1",
+>>>>>>> d4e0776154795b863125d6863841dba6f6e12a10
     "cors": "^2.8.5",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
+<<<<<<< HEAD
+=======
+    "lightweight-charts": "^4.2.1",
+>>>>>>> d4e0776154795b863125d6863841dba6f6e12a10
     "mariadb": "^3.4.0",
     "moment": "^2.30.1",
     "mysql2": "^3.11.4",
@@ -20,10 +29,18 @@
     "querystring-es3": "^0.2.1",
     "react": "^18.3.1",
     "react-calendar": "^5.1.0",
+<<<<<<< HEAD
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
+=======
+    "react-chartjs-2": "^5.2.0",
+    "react-circular-progressbar": "^2.1.0",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "react-scripts": "^5.0.1",
+>>>>>>> d4e0776154795b863125d6863841dba6f6e12a10
     "recharts": "^2.13.3",
     "sentiment": "^5.0.2",
     "stock_news": "file:",
