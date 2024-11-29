@@ -37,4 +37,3 @@ const App = () => {
 };
 
 export default App;
-//바뀜//바뀜
