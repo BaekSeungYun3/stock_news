@@ -1,0 +1,76 @@
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.stock-table th, .stock-table td {
+    border: 1px solid #444;
+    padding: 12px;
+    text-align: left;
+    color: #ffffff;
+    min-width: 120px; /* 최소 너비 설정으로 셀 크기 조정 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
+    overflow: hidden; /* 넘치는 내용 숨김 */
+    text-overflow: ellipsis; /* 넘치는 내용에 '...' 표시 */
+}
+
+.stock-table th {
+    background-color: #333;
+}
+
+.stock-table tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
+.stock-table tr:nth-child(odd) {
+    background-color: #222;
+}
+
+.stock-table tr:hover {
+    background-color: #444;
+}
+
+h1, h2 {
+    color: #444;
+}
+
+.latest-stock-info p {
+    margin: 10px 0; /* 위쪽과 아래쪽 마진을 10px로 설정 */
+}
+
+.latest-stock-info h2,
+.latest-stock-info h3 {
+    margin: 10px 0; /* 제목에도 마진 추가 */
+}
+
+.icon {
+    margin-right: 8px; /* 아이콘과 텍스트 사이 여백 */
+}
+
+.initial {
+    color: gray;
+}
+
+.limit-up {
+    color: gold;
+}
+
+.increase {
+    color: green;
+}
+
+.flat {
+    color: blue;
+}
+
+.limit-down {
+    color: orange;
+}
+
+.decrease {
+    color: red;
+}
