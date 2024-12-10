@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
+import { FaUserCircle } from 'react-icons/fa'; // React Icons에서 사용자 아이콘 가져오기
 
 const Header = () => {
   const navigate = useNavigate();
@@ -19,6 +20,12 @@ const Header = () => {
           <>
             <button onClick={() => navigate('/calendar')}>캘린더</button>
             <button onClick={handleLogout}>로그아웃</button>
+            {/* 마이페이지 아이콘 */}
+            <FaUserCircle
+              className="user-icon"
+              onClick={() => navigate('/my-page')}
+              title="마이페이지"
+            />
           </>
         ) : (
           <>

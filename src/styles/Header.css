@@ -17,7 +17,9 @@
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
+  margin-left: auto; /* 버튼과 아이콘을 오른쪽으로 정렬 */
 }
 
 .header-actions button {
@@ -33,4 +35,18 @@
 
 .header-actions button:hover {
   background-color: #372e6c;
+}
+
+/* 마이페이지 아이콘 스타일 */
+.user-icon {
+  font-size: 1.8rem;
+  color: #4a3b8b;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.2);
+  color: #372e6c;
 }

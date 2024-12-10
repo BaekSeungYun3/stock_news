@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Signup.css';
 
@@ -7,6 +8,7 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -25,7 +27,14 @@ const Signup = () => {
       });
 
       if (response.status === 201) {
+        const { token } = response.data; // 서버에서 받은 토큰
         setMessage('회원가입 성공!');
+
+        // 토큰을 localStorage에 저장
+        localStorage.setItem('token', token);
+
+        // StockInput 페이지로 이동
+        navigate('/stock-input', { state: { token } }); // token을 함께 전달
       } else {
         setMessage('회원가입 실패');
       }

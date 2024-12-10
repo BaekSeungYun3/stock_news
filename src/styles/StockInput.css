@@ -1,0 +1,52 @@
+.stock-input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .stock-input-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+  }
+  
+  .stock-input-box h2 {
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .stock-input-box form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stock-input-box input,
+  .stock-input-box select,
+  .stock-input-box textarea,
+  .stock-input-box button {
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .stock-input-box button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .stock-input-box button:hover {
+    background-color: #45a049;
+  }
+  
+  .message {
+    color: green;
+    text-align: center;
+  }
+  
