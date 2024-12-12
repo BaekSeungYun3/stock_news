@@ -1,0 +1,46 @@
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75vh;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.dropdown {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  padding: 10px;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  z-index: 10;
+}
+.tooltip {
+  display: block !important;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-size: 12px;
+}
+
+
+.tooltip.visible {
+  display: block; /* 표시할 때 */
+}
+
+
+

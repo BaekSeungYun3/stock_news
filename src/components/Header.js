@@ -14,7 +14,12 @@ const Header = () => {
 
   return (
     <header className="header">
-      <h1 className="header-title">페이지 이름</h1>
+
+    <div className="header-title-container" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+      {/* 클릭 시 대시보드로 이동 */}
+      <h1 className="header-title">MarketLens</h1>
+    </div>
+
       <div className="header-actions">
         {isLoggedIn ? (
           <>

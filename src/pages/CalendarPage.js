@@ -201,7 +201,7 @@ const CalendarPage = () => {
               <p>
                 <strong>종료일:</strong> {selectedEvent.end.toDateString()}
               </p>
-              <p>
+              <p> 
                 <strong>상세 내용:</strong> {selectedEvent.description}
               </p>
               <button onClick={handleCloseModal}>닫기</button>

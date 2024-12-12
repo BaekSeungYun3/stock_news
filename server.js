@@ -305,9 +305,122 @@ app.delete("/api/stocks/:id", authenticateToken, (req, res) => {
     );
 });
 
+//-------[4] 캘린더관련 데이터 관리-------
+
+// 캘린더 새 일정 저장
+app.post('/api/events', (req, res) => {
+    const { title, start, end, description } = req.body;
+  
+    if (!title || !start || !end) {
+      return res.status(400).json({ error: '필수 필드가 누락되었습니다.' });
+    }
+  
+    // MySQL에서 인식할 수 있는 DATETIME 형식으로 변환
+    const formattedStart = new Date(start).toISOString().slice(0, 19).replace('T', ' ');
+    const formattedEnd = new Date(end).toISOString().slice(0, 19).replace('T', ' ');
+  
+    const query = `
+      INSERT INTO events (title, start, end, description)
+      VALUES (?, ?, ?, ?)
+    `;
+  
+    connection.query(query, [title, formattedStart, formattedEnd, description || ''], (err, results) => {
+      if (err) {
+        console.error('일정 저장 오류:', err);
+        return res.status(500).json({ error: '일정 저장 중 오류가 발생했습니다.' });
+      }
+  
+      res.status(201).json({ id: results.insertId, title, start: formattedStart, end: formattedEnd, description });
+    });
+  });
+  // 캘린더 일정 가져오기
+  app.get('/api/events', (req, res) => {
+    const query = `
+      SELECT id, title, start, end, description
+      FROM events
+    `;
+  
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('일정 불러오기 오류:', err);
+        return res.status(500).json({ error: '일정을 불러오는 중 오류가 발생했습니다.' });
+      }
+  
+      // MySQL에서 불러온 데이터를 JS Date 객체로 변환
+      const events = results.map(event => ({
+        ...event,
+        start: new Date(event.start),
+        end: new Date(event.end),
+      }));
+  
+      res.json(events);
+    });
+  });
   
 
-// ---- [4] 서버 실행 ----
+//----[5] 실시간 주식 데이터 ----
+app.get("/stocks", (req, res) => {
+    const query = `
+      WITH grouped_data AS (
+    SELECT 
+      DATE_FORMAT(
+        STR_TO_DATE(CONCAT(거래일, ' ', LPAD(거래시간, 6, '0')), '%Y-%m-%d %H%i%S'),
+        '%Y-%m-%d %H:%i'
+      ) AS time_group,
+      체결가격 AS price,
+      거래량 AS volume,
+      고가 AS highPrice,
+      저가 AS lowPrice,
+      ROW_NUMBER() OVER (
+        PARTITION BY DATE_FORMAT(
+          STR_TO_DATE(CONCAT(거래일, ' ', LPAD(거래시간, 6, '0')), '%Y-%m-%d %H%i%S'),
+          '%Y-%m-%d %H:%i'
+        ) 
+        ORDER BY STR_TO_DATE(CONCAT(거래일, ' ', LPAD(거래시간, 6, '0')), '%Y-%m-%d %H%i%S') DESC
+      ) AS row_num_desc
+    FROM stock_data_20241104
+    WHERE 거래일 = CURDATE()
+  ),
+  volume_sums AS (
+    SELECT 
+      DATE_FORMAT(
+        STR_TO_DATE(CONCAT(거래일, ' ', LPAD(거래시간, 6, '0')), '%Y-%m-%d %H%i%S'),
+        '%Y-%m-%d %H:%i'
+      ) AS time_group,
+      SUM(거래량) AS totalVolume
+    FROM stock_data_20241104
+    WHERE 거래일 = CURDATE()
+    GROUP BY time_group
+  ),
+  aggregated_data AS (
+    SELECT 
+      g.time_group,
+      MAX(g.highPrice) AS highPrice,
+      MIN(g.lowPrice) AS lowPrice,
+      MAX(g.price) AS closingPrice,
+      v.totalVolume, -- 시간대별 합산된 거래량을 Join
+      LAG(MAX(g.price)) OVER (ORDER BY g.time_group) AS openingPrice
+    FROM grouped_data AS g
+    JOIN volume_sums AS v
+      ON g.time_group = v.time_group
+    WHERE g.row_num_desc = 1
+    GROUP BY g.time_group, v.totalVolume
+  )
+  SELECT *
+  FROM aggregated_data
+  ORDER BY time_group ASC
+    `;
+  
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error("❌ 주식 데이터 쿼리 실행 오류:", err);
+        return res.status(500).json({ error: "서버 오류" });
+      }
+      res.json(results);
+    });
+});
+
+// ---- [6] 서버 실행 ----
 app.listen(PORT, () => {
     console.log(`✅ 서버가 http://localhost:${PORT}에서 실행 중입니다.`);
 });
