@@ -8,6 +8,7 @@ const RealtimeChart = () => {
   const candlestickSeriesRef = useRef(null);
   const volumeSeriesRef = useRef(null);
   const movingAverageSeriesRef = useRef(null);
+  const userPriceSeriesRef = useRef(null); // 사용자 주식 데이터를 위한 라인 시리즈
 
   const [candlestickData, setCandlestickData] = useState([]);
   const [totalVolume, setTotalVolume] = useState(0); // 전체 누적 거래량
@@ -78,6 +79,12 @@ const RealtimeChart = () => {
         lineWidth: 2,
       });
 
+      userPriceSeriesRef.current = priceChart.addLineSeries({
+        color: "rgba(0, 255, 0, 1)", // 사용자 주식 데이터는 녹색 라인으로 표시
+        lineWidth: 2,
+        
+      });
+
       priceChartRef.current = priceChart;
       volumeChartRef.current = volumeChart;
 
@@ -91,7 +98,7 @@ const RealtimeChart = () => {
         const response = await fetch("http://localhost:3001/stocks");
         if (!response.ok) throw new Error("데이터 로드 실패");
         const data = await response.json();
-    
+
         const formattedCandlestickData = data.map((item, index) => ({
           time: Math.floor(new Date(`${item.time_group}:00Z`).getTime() / 1000),
           open: index === 0 ? (item.openingPrice || item.closingPrice) : Number(item.openingPrice), // 첫 데이터는 이전 종가를 대체하거나 기본값으로 대체
@@ -100,17 +107,17 @@ const RealtimeChart = () => {
           close: Number(item.closingPrice),
           volume: Number(item.totalVolume),
         }));
-    
+
         console.log("Formatted Data: ", formattedCandlestickData);
-    
+
         setCandlestickData(formattedCandlestickData);
-    
+
         if (formattedCandlestickData.length > 0) {
           setLastClosePrice(
             formattedCandlestickData[formattedCandlestickData.length - 1].close
           );
         }
-    
+
         candlestickSeriesRef.current.setData(formattedCandlestickData);
         volumeSeriesRef.current.setData(
           formattedCandlestickData.map((item) => ({
@@ -119,23 +126,41 @@ const RealtimeChart = () => {
             color: item.close > item.open ? "rgba(225, 50, 85, 1)" : "rgba(54, 116, 217, 1)",
           }))
         );
-    
+
         if (formattedCandlestickData.length > 0) {
           const movingAverageData = calculateMovingAverage(formattedCandlestickData, 5);
           movingAverageSeriesRef.current.setData(movingAverageData);
-    
+
           const initialTotalVolume = formattedCandlestickData.reduce(
             (acc, item) => acc + item.volume,
             0
           );
           setTotalVolume(initialTotalVolume);
         }
-      } catch (error) {
-        console.error("초기 데이터 로드 오류:", error);
-      }
-    };
-    
 
+        // 사용자 매수 평균 표시
+      const userResponse = await fetch("http://localhost:3001/api/stocks", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const userData = await userResponse.json();
+
+      const userPrices = userData.map((item) => Number(item.price));
+      const averagePrice =
+        userPrices.reduce((acc, price) => acc + price, 0) / userPrices.length;
+
+      userPriceSeriesRef.current.setData(
+        formattedCandlestickData.map((item) => ({
+          time: item.time,
+          value: averagePrice,
+        }))
+      );
+
+    } catch (error) {
+      console.error("데이터 로드 오류:", error);
+    }
+  };
+
+  fetchInitialData();
 
     fetchInitialData();
 
@@ -208,6 +233,18 @@ const RealtimeChart = () => {
     <div>
       <div id="price-chart" className="price-chart-container"></div>
       <div id="volume-chart" className="volume-chart-container"></div>
+      <div className="legend-container">
+        <div className="legend-item" style={{ color: "rgba(0, 255, 0, 1)" }}>
+          ● 초록선: 매수금액
+        </div>
+        <div className="legend-item" style={{ color: "rgba(255, 165, 0, 1)" }}>
+          ● 주황선: 평균가
+        </div>
+        <div className="legend-item">
+          <span style={{ color: "rgba(225, 50, 85, 1)" }}>● 빨강</span>/<span style={{ color: "rgba(54, 116, 217, 1)" }}>파랑</span>
+          <span style={{ color: "rgba(0, 0, 0, 1)" }}>: 현재가</span>
+        </div>
+      </div>
     </div>
   );
 };
